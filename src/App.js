@@ -1,25 +1,35 @@
 import logo from './logo.svg';
+import React from 'react'
 import './App.css';
+import {connect} from "react-redux"
+import {HashRouter, Route, Redirect} from "react-router-dom";
+import Convert from './Components/Convert'
+import Parse from  './Components/Parse'
+import NavBar from './Components/NavBar/NavBar'
+import {GetCurrencyList, GetCurrentCoefficient, GetCurrencyParseList} from './redux/commonReducer'
 
-function App() {
+
+function App(props) {
+
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+        <NavBar/>
+        <Route path='/' render={() => <Redirect from="/" to="/convert" />} />
+        <Route path='/convert' render={() => <Convert {...props} />} />
+        <Route path='/parse' render={() => <Parse {...props} />} />
     </div>
   );
 }
 
-export default App;
+const mapStateToProps = (state) => {
+    return {
+        currencyList: state.commonData.currencyList,
+        currentCoefficient: state.commonData.currentCoefficient,
+        currencyParse: state.commonData.currencyParse
+    }
+}
+
+const AppContainer = connect(mapStateToProps, {GetCurrencyList, GetCurrentCoefficient, GetCurrencyParseList})(App)
+
+export default AppContainer;
